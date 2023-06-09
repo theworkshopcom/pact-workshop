@@ -1,0 +1,13 @@
+
+<ng-container *ngIf="cart$ | async as cart">
+<ul>
+    <li *ngFor="let product of cart.products">
+        <h3>
+        {{ product.name }}
+        </h3>
+    </li>
+</ul>
+<p><b>Total items:</b> {{ cart.products.length }}</p>
+<p><b>Total price:</b> {{ cart.totalPrice }}</p>
+</ng-container>
+<button type="button" (click)="onClickClearCart()" clickable>Clear Cart</button>

@@ -1,0 +1,3 @@
+pactbroker:
+  host: pact-broker
+  port: 9292

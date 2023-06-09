@@ -1,0 +1,47 @@
+services:
+  product-service:
+    container_name: product-service
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./product-service:/src
+    ports:
+      - "9001:32500"
+  cart-service:
+    container_name: cart-service
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./cart-service:/src
+    ports:
+      - "9002:32501"
+  pact-broker:
+    container_name: pact-broker
+    image: pactfoundation/pact-broker
+    ports:
+      - "9003:9292"
+    environment:
+      - PACT_BROKER_DATABASE_ADAPTER=sqlite
+      - PACT_BROKER_DATABASE_NAME=pact-broker-db
+  pact-cli:
+    container_name: pact-cli
+    image: pactfoundation/pact-cli
+    command: tail -f /dev/null
+    environment:
+      - PACT_BROKER_BASE_URL=http://pact-broker:9292
+  dev-environment:
+    container_name: dev-environment
+    build: 
+      context: ./dev
+      dockerfile: Dockerfile
+    command: tail -f /dev/null
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+      - "3003:3003"
+    volumes:
+      - ./product-service:/src/product-service
+      - ./cart-service:/src/cart-service
+      - ./angular-app:/src/angular-app

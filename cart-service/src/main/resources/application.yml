@@ -1,0 +1,9 @@
+server:
+  port: 32501
+
+spring:
+  jackson:
+    default-property-inclusion: non_null
+
+productsclient:
+  url: product-service:32500
