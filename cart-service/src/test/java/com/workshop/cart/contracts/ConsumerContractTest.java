@@ -23,9 +23,9 @@ import static org.assertj.core.api.Assertions.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @ExtendWith(PactConsumerTestExt.class)
+@SpringBootTest
 /******** Exercise 1 - provider setup **************/
 @PactTestFor(providerName = "products-service", port="36000")
-@SpringBootTest
 /***************************************************/
 @ActiveProfiles("test")
 public class ConsumerContractTest {
@@ -38,7 +38,7 @@ public class ConsumerContractTest {
     public RequestResponsePact getProductSuccess(PactDslWithProvider builder) throws IOException {
         PactDslJsonBody body_response = new PactDslJsonBody();
         body_response.stringType("name", "book");
-      //  body_response.stringType("shortName", "book");  /***** breaking contract exercise 1  ****/
+      //  body_response.stringType("shortName", "book");  /// breaking contract exercise 1
         body_response.numberType("price", 100);
         return builder
                 .given("a product exists") //4 - Provider state from consumer's perspective
@@ -52,7 +52,18 @@ public class ConsumerContractTest {
                 .toPact();
     }
 
-    @Pact(consumer = "cart-service") //1 - Pact Annotation
+    /******** Exercise 1 - @Test **************/
+    @Test
+    @PactTestFor(pactMethod = "getProductSuccess")
+    void testGetProductSuccess() {
+        Optional<Product> productReceived = productsClient.getProductByRef("123");
+
+        assertThat(productReceived).isPresent();
+        assertThat(productReceived.get()).isEqualTo(TestExpectations.product);
+    }
+
+    /******** Exercise 1 - @Pact **************/
+     @Pact(consumer = "cart-service") //1 - Pact Annotation
     public RequestResponsePact getProductNotFound(PactDslWithProvider builder) {
         return builder
                 .given("product does not exists") //4 - Provider state from consumer's perspective
@@ -65,6 +76,15 @@ public class ConsumerContractTest {
                 .toPact();
     }
 
+    /******** Exercise 1 - @Test **************/
+    @Test
+    @PactTestFor(pactMethod = "getProductNotFound")
+    void testGetProductNotFound() {
+        assertThatExceptionOfType(FeignException.NotFound.class).isThrownBy(() ->
+                productsClient.getProductByRef("xxx")).withMessageContaining("[404 Not Found] during [GET]");
+    }
+
+    /******** Exercise 1 - @Pact **************/
     @Pact(consumer = "cart-service") //1 - Pact Annotation
     public RequestResponsePact getProductBadRequest(PactDslWithProvider builder) {
         return builder
@@ -76,33 +96,16 @@ public class ConsumerContractTest {
                     .status(400)
                 .toPact();
     }
-    /***********************************/
-
 
     /******** Exercise 1 - @Test **************/
-    @Test
-    @PactTestFor(pactMethod = "getProductSuccess")
-    void testGetProductSuccess() {
-        Optional<Product> productReceived = productsClient.getProductByRef("123");
-
-        assertThat(productReceived).isPresent();
-        assertThat(productReceived.get()).isEqualTo(TestExpectations.product);
-    }
-
-    @Test
-    @PactTestFor(pactMethod = "getProductNotFound")
-    void testGetProductNotFound() {
-        assertThatExceptionOfType(FeignException.NotFound.class).isThrownBy(() ->
-                productsClient.getProductByRef("xxx")).withMessageContaining("[404 Not Found] during [GET]");
-    }
-
     @Test
     @PactTestFor(pactMethod = "getProductBadRequest")
     void testGetProductBadRequest() {
             assertThatExceptionOfType(FeignException.BadRequest.class).isThrownBy(() ->
                     productsClient.getProductByRef(null)).withMessageContaining("[400 Bad Request] during [GET]");
     }
-    /***********************************/
+
+
 
     interface TestExpectations {
         Product product = TestUtils.getProduct(null, "book", 100);

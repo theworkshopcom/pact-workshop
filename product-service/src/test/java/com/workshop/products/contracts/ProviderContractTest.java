@@ -25,13 +25,13 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static com.workshop.products.TestUtils.PRODUCT_REF;
 
 @ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 /******** Exercise 1 - provider & pactbroker **************/
 @Provider("products-service")
 @PactBroker
 //@PactFolder("pacts")
-@SpringBootTest(webEnvironment = RANDOM_PORT)
 /***********************************/
-//@IgnoreNoPactsToVerify
+
 @ActiveProfiles("test")
 public class ProviderContractTest {
     @LocalServerPort
@@ -40,7 +40,7 @@ public class ProviderContractTest {
     /******** Exercise 1 - mock service layer **************/
     @MockBean
     ProductService productService;
-    /***********************************/
+
 
     /******** Exercise 1 - test template **************/
     @TestTemplate
@@ -50,7 +50,7 @@ public class ProviderContractTest {
             context.verifyInteraction();
         }
     }
-    /***********************************/
+
 
     /******** Exercise 1 - httpTarget **************/
     @BeforeEach
@@ -59,7 +59,7 @@ public class ProviderContractTest {
             context.setTarget(new HttpTestTarget("localhost", serverPort));
         }
     }
-    /***********************************/
+
 
     /******** Exercise 1 -state **************/
     @State("a product exists")
@@ -67,15 +67,17 @@ public class ProviderContractTest {
         when(productService.getProduct(any()))
                 .thenReturn(TestUtils.getProduct(PRODUCT_REF, "contract_product", "first contract product", 200));
     }
-    /***********************************/
+
+
+    /******** Exercise 1 -state **************/
     @State("product does not exists")
     public void productNotFound() {
         when(productService.getProduct(any()))
                 .thenReturn(null);
     }
-    /***********************************/
 
 
+    /******** Exercise 2 -state **************/
     @State("The user is visiting the home page")
     public void getAllProducts() {
         when(productService.getAllProducts())

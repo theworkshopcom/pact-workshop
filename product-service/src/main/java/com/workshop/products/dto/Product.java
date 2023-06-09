@@ -12,8 +12,8 @@ import lombok.Data;
 public class Product {
     String ref;
     String name;
-  // String shortName;     /****** Breaking contract demo *****/
-  // String description;   /****** Breaking contract demo *****/
+   // String shortName;     /****** Breaking contract demo *****/
+   // String description;   /****** Breaking contract demo *****/
     int price;
 }
 

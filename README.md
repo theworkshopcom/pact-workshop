@@ -3,17 +3,23 @@ Build dev environment
 ```bash
 docker-compose up --force-recreate
 ```
-Start using development container
+
+Open dev environment terminal
 ```bash
 docker exec -it dev-environment /bin/bash
+```
+
+Start applications
+```bash
 cd product-service
-./mvnw install -DskipTests
+./mvnw install
 cd ..
 cd cart-service
-./mvnw install -DskipTests
+./mvnw install
 cd ..
 cd angular-app
 npm install
+npm run start:all
 ```
 Start using pact-cli container
 ```bash
@@ -54,6 +60,16 @@ Force a version
 - Add Product:  **POST** http://localhost:9002/api/cart/product `{"ref": "111"}`
 - Get Cart:  **GET** http://localhost:9002/api/cart
 - Clear Cart **PUT** http://localhost:32501/api/cart/clear
+
+<br/>
+
+# Frontend
+Run angular-app
+```bash
+npm run start:all
+```
+**URL**:
+http://localhost:3001/
 
 <br/>
 

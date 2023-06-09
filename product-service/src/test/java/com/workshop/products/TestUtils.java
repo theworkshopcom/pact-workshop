@@ -24,8 +24,8 @@ public class TestUtils {
         return Product.builder()
                 .ref(ref)
                 .name(name)
-               // .shortName(name)  /****** Breaking contract demo *****/
-               // .description(description)  /****** Breaking contract demo *****/
+                // .shortName(name)  /****** Breaking contract demo *****/
+                // .description(description)  /****** Breaking contract demo *****/
                 .price(price)
                 .build();
     }
