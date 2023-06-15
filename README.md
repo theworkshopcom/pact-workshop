@@ -47,6 +47,21 @@ Force a version
 ```
 <br/>
 
+# Frontend
+Contract Tests (Product Angular Microfrontend)
+```bash
+npm run test:product
+```
+Contract Tests (Cart Angular Microfrontend)
+```bash
+npm run cart:product
+```
+Publish Pact Contracts to broker
+```bash
+npm run publish:pact
+```
+<br/>
+
 ### Endpoints backend
 
 
